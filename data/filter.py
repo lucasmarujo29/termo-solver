@@ -1,36 +1,56 @@
-# # este arquivo será responsável por filtrar as palavras do dicionário, ou seja, pegar somente as palavras que sejam válidas para o jogo
-# # o dicionário que peguei do Libre Office possui a seguinte formatação:
-# # o primeiro elemento é o número de palavras, depois tem cada palavra, algumas com um "palavra/categoria"
-# # ou seja preciso:
-# # 
-# # 1. remover as categorias, ou seja, tudo que vier depois de uma barra (/) em cada palavra
-# # 2. remover letras maiusculas, caracteres especiais, sendo acentos, hífens e etc
-# # 3. remover palavras que não tenham exatamente 5 letras
-# #
-# import unidecode
-# import os
+# este arquivo será responsável por filtrar as palavras do dicionário, ou seja, pegar somente as palavras que sejam válidas para o jogo
+# para isso, usarei alguns arquivos bases, que peguei do github do criador do jogo
+# arquivo lexico: Léxico completo de palavras portuguesas de múltiplas fontes dicionárias (145.744 entradas)
+# arquivo conjugações: Todas as conjugações verbais (195.751 formas)
+# vou filtrar os dois
 
-# print(os.getcwd())
-
-# dict_base = open("data/dictionary.txt", "r", encoding="utf-8")
-# dict_final = open("data/dictionary_modified.txt", "w", encoding="utf-8")
+import unidecode
 
 
-# for line in dict_base:
-#     line = line.strip()
-#     #remover tag
-#     posSlash = line.find("/")
-#     if(posSlash != -1):
-#         line = line[0:posSlash]
-#     #remover maiusculas
-#     line = line.lower()
-#     #remover acentos
-#     if(line != unidecode.unidecode(line)):
-#         line = unidecode.unidecode(line)
-#     #adicionar ao dicionario apenas se tiver 5 letras
-#     if len(line) == 5:
-#         dict_final.write(line + "\n")
+def removeRepeatingLines():
+    dict_final = open("data/words-5-letters.txt", "w", encoding="utf-8")
+    aux = open("data/aux.txt", "w", encoding="utf-8")
 
-# dict_base.close()
-# dict_final.close()
+    wordsFinal=set()
 
+    aux.close()
+    dict_final.close()
+
+def createMainList():
+    b1 = open("data/lexico.txt", "r", encoding="utf-8") 
+    b2 = open("data/conjugações.txt", "r", encoding="utf-8")
+    aux = open("data/aux.txt", "w", encoding="utf-8")
+    for line in b1:
+        line = line.strip()
+        #remover maiusculas
+        line = line.lower()
+        #remover acentos
+        if(line != unidecode.unidecode(line)):
+            line = unidecode.unidecode(line)
+        #adicionar ao dicionario apenas se tiver 5 letras
+        if len(line) == 5:
+            aux.write(line + "\n")
+
+    for line in b2:
+        line = line.strip()
+        #remover maiusculas
+        line = line.lower()
+        #remover acentos
+        if(line != unidecode.unidecode(line)):
+            line = unidecode.unidecode(line)
+        #adicionar ao dicionario apenas se tiver 5 letras
+        if (len(line) == 5) & (line.isalpha):
+            aux.write(line + "\n")
+
+    b1.close()
+    b2.close()
+    aux.close()
+
+def main():
+    
+    createMainList()
+    removeRepeatingLines()
+
+
+if __name__ == "__main__":
+    main()
